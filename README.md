@@ -115,3 +115,11 @@ curl --location --request POST 'http://localhost:8080/http-policy?filepath=/User
  ]
 }'
 ```
+
+# Docker
+The solution can also be ran as a docker image.
+
+```
+docker build -t http-policy .
+docker run -p 8080:8080 -it http-policy
+```
