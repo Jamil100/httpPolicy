@@ -64,7 +64,7 @@ Expected Output:
     }
 ]
 ```
-I used Postman to send the requests. Note: The solution creates a text file of the response and places in the passed file path.
+I used Postman to send the requests. Note: The solution creates a text file of the response and places the file in the passed file path.
 
 Postman Screenshot:
 ![image](https://user-images.githubusercontent.com/75333239/180608630-2b2189fb-6423-4bd8-98b3-7a3bed8c866e.png)
