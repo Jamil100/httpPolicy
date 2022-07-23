@@ -77,7 +77,7 @@ The request should contain the body with the http policy rules. Also, it has fil
 
 Sample curl request:
 ```Linux
-curl --location --request POST 'http://localhost:8080/http-policy?filepath=/Users/apple' \
+curl --location --request POST 'http://localhost:8080/http-policy?filepath='your-file-path'' \
 --header 'Content-Type: application/json' \
 --data-raw '{
  "rules": [
