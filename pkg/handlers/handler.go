@@ -9,7 +9,6 @@ import (
 
 	"github.com/fatih/structs"
 	"github.com/mitchellh/mapstructure"
-	"github.com/mpvl/unique"
 )
 
 //this is the struct which we use to take input from bosy in json
@@ -60,7 +59,7 @@ func HandleHttpPolicy(w http.ResponseWriter, r *http.Request) {
 	//list of rules which appended
 	append_rule := []string{}
 
-	var a []int
+	var a []string
 	//loop through the rules from our input json
 	for i := range rule.Rules {
 		bytesP, _ := json.Marshal(rule.Rules[i]) //for checking in debugging
@@ -68,7 +67,7 @@ func HandleHttpPolicy(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(bytesS)
 
 		// if len(rule.Rules[i].Requires) == 0 || strings.Compare(append_rule[0], rule.Rules[i].Requires[0]) == 0 {
-		if len(rule.Rules[i].Requires) == 0 { //if no requires, we add to the first
+		if len(rule.Rules[i].Requires) == 0 { //if no 'requires' field, we add to the first
 			response.Rules = append(response.Rules, rule.Rules[i])
 			append_rule = append(append_rule, rule.Rules[i].ID)
 		}
@@ -84,15 +83,16 @@ func HandleHttpPolicy(w http.ResponseWriter, r *http.Request) {
 					append_rule = append(append_rule, rule.Rules[i].ID)
 					response.Rules = append(response.Rules, rule.Rules[i])
 				}
-			} else {
-				a = append(a, i)
 			}
+			a = append(a, r)
 		}
 	}
+
 	//appending the rules missed by first loop
-	unique.Ints(&a)
+	//unique.Ints(&a)
 	fmt.Println(a)
-	for i := range rule.Rules {
+	//for i := range rule.Rules
+	for i := range append_rule {
 		for x := range rule.Rules[i].Requires {
 			r := rule.Rules[i].Requires[x]
 			if strings.Compare(append_rule[i], r) == 0 {
@@ -104,7 +104,7 @@ func HandleHttpPolicy(w http.ResponseWriter, r *http.Request) {
 	//create a new struct
 	resultStruct := result{}
 	//creating a map, because we want to delete requires in the output
-	//in go, we cant delete keys in struct, we can though delete in map
+	//in go, we cant delete keys in struct, however, we can delete in map
 	maap := structs.Map(response)
 	//deleting the requires key with the values
 	delete(maap, "requires")
@@ -115,7 +115,8 @@ func HandleHttpPolicy(w http.ResponseWriter, r *http.Request) {
 	path := filePath
 	fileName := fmt.Sprintf("%s/responseFile.txt", path)
 	// fileName := "cmd/web/responseFile.txt"
-	_ = ioutil.WriteFile(fileName, file, 0644) //644?
+	_ = ioutil.WriteFile(fileName, file, 0644) //the 0644 is octal representation of the filemode
+
 	//json response send as a output
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(resultStruct)
